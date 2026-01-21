@@ -1,0 +1,123 @@
+.screen-container {
+    perspective: 1000px;
+    margin-bottom: 50px;
+    display: flex;
+    justify-content: center;
+}
+
+.screen {
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.7), transparent);
+    height: 60px;
+    width: 60%;
+    transform: rotateX(-30deg);
+    box-shadow: 0 20px 50px rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--bg-primary);
+    font-weight: bold;
+    letter-spacing: 5px;
+    opacity: 0.8;
+}
+
+.seat-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+    margin-bottom: 50px;
+}
+
+.seat-row {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.row-label {
+    width: 30px;
+    font-weight: bold;
+    color: var(--text-secondary);
+}
+
+.seat {
+    width: 40px;
+    height: 40px;
+    background-color: var(--bg-tertiary);
+    border: 1px solid var(--text-secondary);
+    border-radius: 8px 8px 4px 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--text-secondary);
+    transition: all 0.3s ease;
+}
+
+.seat:hover:not(.booked) {
+    border-color: var(--color-gold-primary);
+    transform: scale(1.1);
+}
+
+.seat.selected {
+    background-color: var(--color-gold-primary);
+    color: var(--bg-primary);
+    border-color: var(--color-gold-primary);
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.6);
+}
+
+.seat.booked {
+    background-color: #333;
+    border-color: #444;
+    color: #666;
+    cursor: not-allowed;
+}
+
+.legend {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+}
+
+.legend-item .seat {
+    width: 25px;
+    height: 25px;
+    cursor: default;
+}
+
+.booking-actions {
+    background-color: var(--bg-secondary);
+    padding: 20px;
+    border-top: 1px solid var(--color-gold-primary);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+}
+
+.price-info {
+    font-size: 1.2rem;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.price-info .amount {
+    color: var(--color-gold-primary);
+    font-weight: bold;
+    font-size: 1.5rem;
+}

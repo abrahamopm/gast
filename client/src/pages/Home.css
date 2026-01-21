@@ -1,0 +1,273 @@
+/* Artistic Landing Page Styles */
+
+/* Hero Section */
+.hero {
+    height: 90vh;
+    /* Taller hero for impact */
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: var(--bg-primary);
+    /* Ensure white background */
+    overflow: hidden;
+    transition: all 1s ease;
+    /* Smooth background transition */
+}
+
+/* Background Image with Artistic Mask/Overlay */
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 65%;
+    /* Only cover right side */
+    height: 100%;
+    background-image: var(--hero-bg);
+    /* Set via inline style in JSX */
+    background-size: cover;
+    background-position: center;
+    /* Create an artistic slant/fade */
+    mask-image: linear-gradient(to right, transparent 0%, black 30%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 30%);
+    z-index: 1;
+    opacity: 0.9;
+    transition: background-image 1s ease;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 600px;
+    padding-left: 50px;
+    /* Indent for elegance */
+}
+
+/* Artistic Typography */
+.hero-tag {
+    font-family: var(--font-body);
+    color: var(--color-gold-primary);
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    /* Wide spacing */
+    font-size: 14px;
+    margin-bottom: 20px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.hero-tag::before {
+    content: '';
+    height: 1px;
+    width: 40px;
+    background-color: var(--color-gold-primary);
+}
+
+.hero-title {
+    font-family: var(--font-heading);
+    font-size: 5.5rem;
+    /* Huge title */
+    line-height: 0.95;
+    margin-bottom: 30px;
+    color: var(--text-primary);
+    font-weight: 700;
+    text-shadow: 2px 2px 0px rgba(212, 175, 55, 0.1);
+    /* Subtle gold shadow */
+}
+
+.hero-synopsis {
+    font-family: var(--font-body);
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    margin-bottom: 40px;
+    line-height: 1.8;
+    max-width: 450px;
+    border-left: 3px solid var(--color-gold-primary);
+    padding-left: 20px;
+}
+
+.hero-meta {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 40px;
+    font-family: var(--font-heading);
+    font-style: italic;
+    color: var(--text-primary);
+    font-size: 1.2rem;
+}
+
+/* Hero Actions & Slider Dots */
+.hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.slider-dots {
+    display: flex;
+    gap: 10px;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: var(--bg-tertiary);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.dot.active {
+    background-color: var(--color-gold-primary);
+    transform: scale(1.2);
+}
+
+/* Button Refinement */
+.btn-primary {
+    background: var(--text-primary);
+    /* Black button */
+    color: var(--color-gold-primary);
+    /* Gold text */
+    border: 1px solid var(--text-primary);
+    padding: 15px 40px;
+    font-size: 16px;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.btn-primary:hover {
+    background: var(--color-gold-primary);
+    color: var(--text-primary);
+    border-color: var(--color-gold-primary);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3);
+}
+
+/* Section Header Artistic */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 60px;
+    border-bottom: 1px solid var(--bg-tertiary);
+    /* Lighter border */
+    padding-bottom: 20px;
+}
+
+.section-header h2 {
+    font-size: 3rem;
+    color: var(--text-primary);
+    position: relative;
+}
+
+.section-header h2::after {
+    content: '';
+    position: absolute;
+    bottom: -21px;
+    /* Align with border */
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background-color: var(--color-gold-primary);
+}
+
+/* New Sections */
+.luxury-section {
+    background-color: var(--bg-secondary);
+    text-align: center;
+    border-top: 1px solid var(--bg-tertiary);
+    border-bottom: 1px solid var(--bg-tertiary);
+}
+
+.luxury-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.luxury-content h2 {
+    font-size: 3.5rem;
+    margin-bottom: 20px;
+    color: var(--color-gold-primary);
+}
+
+.luxury-content p {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    margin-bottom: 40px;
+}
+
+.newsletter-box {
+    background: var(--text-primary);
+    /* Dark box */
+    color: var(--bg-primary);
+    padding: 60px;
+    border-radius: 8px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.newsletter-box h2 {
+    color: var(--color-gold-primary);
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+}
+
+.newsletter-box p {
+    color: var(--text-secondary);
+    /* This might be too dark on black background? 
+                                    Wait, text-secondary is #555. On black bg it's hard to read. 
+                                    Let's override. */
+    color: #ccc;
+    margin-bottom: 30px;
+}
+
+.newsletter-form {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.newsletter-form input {
+    flex: 1;
+    padding: 15px;
+    border-radius: 4px;
+    border: 1px solid #444;
+    background: #111;
+    color: white;
+    outline: none;
+}
+
+.newsletter-form input:focus {
+    border-color: var(--color-gold-primary);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in-up {
+    animation: fadeInUp 0.8s ease forwards;
+}
+
+.fade-in-up-delay {
+    opacity: 0;
+    animation: fadeInUp 0.8s ease forwards 0.3s;
+}
+
+.fade-in-up-delay-2 {
+    opacity: 0;
+    animation: fadeInUp 0.8s ease forwards 0.6s;
+}
