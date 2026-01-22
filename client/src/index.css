@@ -3,6 +3,11 @@
   --color-gold-secondary: #B4941F;
   /* Darker gold for better contrast on white or hover */
 
+  /* Aliases for cleaner code */
+  --gold: var(--color-gold-primary);
+  --black: #000000;
+  --white: #FFFFFF;
+
   /* Light Theme Palette */
   --bg-primary: #FFFFFF;
   --bg-secondary: #F8F9FA;
