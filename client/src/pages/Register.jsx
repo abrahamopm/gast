@@ -1,62 +1,110 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import './Auth.css';
+import { useNotification } from '../context/NotificationContext';
 
 const Register = () => {
-    const [username, setUsername] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [formData, setFormData] = useState({
+        username: '',
+        email: '',
+        password: '',
+        confirmPassword: ''
+    });
     const navigate = useNavigate();
+    const { addNotification } = useNotification();
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const validatePassword = (password) => {
+        const strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
+        return strongRegex.test(password);
+    };
 
     const handleRegister = async (e) => {
         e.preventDefault();
+
+        if (formData.password !== formData.confirmPassword) {
+            addNotification("Passwords do not match!", "error");
+            return;
+        }
+
+        if (!validatePassword(formData.password)) {
+            addNotification("Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.", "error");
+            return;
+        }
+
         try {
-            await axios.post('http://localhost:5000/api/auth/register', { username, email, password });
-            alert('Registration successful! Please login.');
+            await axios.post('http://localhost:5000/api/auth/register', {
+                username: formData.username,
+                email: formData.email,
+                password: formData.password
+            });
+            addNotification('Registration successful! Please login to continue.', 'success');
             navigate('/login');
         } catch (err) {
-            alert('Registration failed.');
+            console.error(err);
+            addNotification(err.response?.data?.message || 'Registration failed.', 'error');
         }
     };
 
     return (
-        <div className="container section-padding auth-page fade-in">
-            <div className="auth-card">
+        <div className="auth-container">
+            <div className="auth-card slide-up">
                 <h2>Create Account</h2>
-                <form onSubmit={handleRegister}>
+                <p className="auth-subtitle">Join the exclusive community of cinema lovers</p>
+                <form onSubmit={handleRegister} className="auth-form">
                     <div className="form-group">
                         <label>Username</label>
                         <input
                             type="text"
+                            name="username"
+                            value={formData.username}
+                            onChange={handleChange}
                             required
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
+                            placeholder="Choose a username"
                         />
                     </div>
                     <div className="form-group">
                         <label>Email Address</label>
                         <input
                             type="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
                             required
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder="Enter your email"
                         />
                     </div>
                     <div className="form-group">
                         <label>Password</label>
                         <input
                             type="password"
+                            name="password"
+                            value={formData.password}
+                            onChange={handleChange}
                             required
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
+                            placeholder="Create a strong password"
                         />
                     </div>
-                    <button type="submit" className="btn-primary full-width">Register</button>
+                    <div className="form-group">
+                        <label>Confirm Password</label>
+                        <input
+                            type="password"
+                            name="confirmPassword"
+                            value={formData.confirmPassword}
+                            onChange={handleChange}
+                            required
+                            placeholder="Confirm your password"
+                        />
+                    </div>
+                    <button type="submit" className="auth-button">Create Account</button>
                 </form>
-                <p className="auth-link">
-                    Already have an account? <Link to="/login">Login here</Link>
-                </p>
+                <div className="auth-footer">
+                    Already have an account? <Link to="/login">Sign In</Link>
+                </div>
             </div>
         </div>
     );

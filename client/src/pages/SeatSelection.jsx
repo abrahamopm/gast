@@ -31,19 +31,28 @@ const SeatSelection = () => {
         }
     };
 
+    const isVip = (row) => ['A', 'B'].includes(row);
+    const getSeatPrice = (row) => isVip(row) ? showtime.price * 1.5 : showtime.price;
+
+    const calculateTotal = () => {
+        return selectedSeats.reduce((total, seatId) => {
+            const row = seatId.charAt(0);
+            return total + getSeatPrice(row);
+        }, 0);
+    };
+
     const handleProceed = () => {
         navigate('/booking/form', {
             state: {
                 showtime,
                 selectedSeats,
-                totalPrice: selectedSeats.length * showtime.price
+                totalPrice: calculateTotal()
             }
         });
     };
 
     if (!showtime) return <div className="loading">Loading...</div>;
 
-    // Group seats by row (A, B, C...)
     const rows = {};
     showtime.seats.forEach(seat => {
         const row = seat.id.charAt(0);
@@ -51,11 +60,14 @@ const SeatSelection = () => {
         rows[row].push(seat);
     });
 
+    const selectedVipCount = selectedSeats.filter(id => isVip(id.charAt(0))).length;
+    const selectedStandardCount = selectedSeats.length - selectedVipCount;
+
     return (
         <div className="container section-padding fade-in">
-            <h2 className="page-title">Select Seats</h2>
+            <h2 className="page-title">Select Your Experience</h2>
             <div className="screen-container">
-                <div className="screen">SCREEN</div>
+                <div className="screen">CINEMA SCREEN</div>
             </div>
 
             <div className="seat-grid">
@@ -65,8 +77,9 @@ const SeatSelection = () => {
                         {rows[rowLabel].map(seat => (
                             <div
                                 key={seat.id}
-                                className={`seat ${seat.status} ${selectedSeats.includes(seat.id) ? 'selected' : ''}`}
+                                className={`seat ${seat.status} ${isVip(rowLabel) ? 'vip' : ''} ${selectedSeats.includes(seat.id) ? 'selected' : ''}`}
                                 onClick={() => toggleSeat(seat)}
+                                title={`${isVip(rowLabel) ? 'VIP' : 'Standard'} - ${getSeatPrice(rowLabel)} ETB`}
                             >
                                 {seat.id.substring(1)}
                             </div>
@@ -76,22 +89,39 @@ const SeatSelection = () => {
             </div>
 
             <div className="legend">
-                <div className="legend-item"><div className="seat available"></div> Available</div>
+                <div className="legend-item"><div className="seat available"></div> Basic</div>
+                <div className="legend-item"><div className="seat available vip"></div> VIP</div>
                 <div className="legend-item"><div className="seat selected"></div> Selected</div>
                 <div className="legend-item"><div className="seat booked"></div> Booked</div>
             </div>
 
             <div className="booking-actions">
-                <div className="price-info">
-                    <span className="label">Total Price:</span>
-                    <span className="amount">{selectedSeats.length * showtime.price} ETB</span>
+                <div className="price-breakdown">
+                    {selectedVipCount > 0 && (
+                        <div className="price-item fade-in">
+                            <span className="price-label">{selectedVipCount} VIP</span>
+                            <span className="price-value">{selectedVipCount * showtime.price * 1.5} ETB</span>
+                        </div>
+                    )}
+                    {selectedStandardCount > 0 && (
+                        <div className="price-item fade-in">
+                            <span className="price-label">{selectedStandardCount} Standard</span>
+                            <span className="price-value">{selectedStandardCount * showtime.price} ETB</span>
+                        </div>
+                    )}
                 </div>
+
+                <div className="total-price">
+                    <span className="total-label">TOTAL</span>
+                    <span className="total-amount">{calculateTotal()} ETB</span>
+                </div>
+
                 <button
                     className="btn-primary"
                     disabled={selectedSeats.length === 0}
                     onClick={handleProceed}
                 >
-                    Proceed to Book
+                    Confirm Selection
                 </button>
             </div>
         </div>

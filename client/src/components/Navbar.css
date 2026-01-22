@@ -13,6 +13,31 @@
     align-items: center;
 }
 
+.btn-outline {
+    padding: 0.5rem 1.5rem;
+    background: var(--black);
+    border: 2px solid var(--black);
+    color: var(--color-white-bg);
+    font-weight: 600;
+    text-decoration: none;
+    border-radius: 50px;
+    /* Modern pill shape */
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.btn-outline:hover {
+    background: var(--black);
+    color: var(--color-white-bg);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.btn-outline.small {
+    padding: 0.4rem 1.2rem;
+    font-size: 0.9rem;
+}
+
 .logo {
     display: flex;
     align-items: center;

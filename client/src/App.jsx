@@ -9,22 +9,25 @@ import Confirmation from './pages/Confirmation';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import { NotificationProvider } from './context/NotificationContext';
 
 function App() {
   return (
     <Router>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/movies" element={<Movies />} />
-        <Route path="/movie/:id" element={<MovieDetail />} />
-        <Route path="/booking/seats/:showtimeId" element={<SeatSelection />} />
-        <Route path="/booking/form" element={<BookingForm />} />
-        <Route path="/booking/confirmation" element={<Confirmation />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-      </Routes>
+      <NotificationProvider>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/movies" element={<Movies />} />
+          <Route path="/movie/:id" element={<MovieDetail />} />
+          <Route path="/booking/seats/:showtimeId" element={<SeatSelection />} />
+          <Route path="/booking/form" element={<BookingForm />} />
+          <Route path="/confirmation" element={<Confirmation />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+        </Routes>
+      </NotificationProvider>
     </Router>
   );
 }
