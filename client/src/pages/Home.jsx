@@ -1,21 +1,21 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
-import MovieCard from '../components/MovieCard';
+import { FaPlay, FaStar, FaTicketAlt, FaChevronRight, FaInfoCircle } from 'react-icons/fa';
 import './Home.css';
 
 const Home = () => {
     const [movies, setMovies] = useState([]);
     const [featuredMovies, setFeaturedMovies] = useState([]);
-    const [currentIndex, setCurrentIndex] = useState(0);
+    const [activeIndex, setActiveIndex] = useState(0);
+    const heroRef = useRef(null);
 
     useEffect(() => {
         const fetchMovies = async () => {
             try {
                 const res = await axios.get('http://localhost:5000/api/movies');
                 setMovies(res.data);
-                // Filter featured movies for slider
                 const featured = res.data.filter(m => m.featured);
-                setFeaturedMovies(featured.length > 0 ? featured : res.data.slice(0, 3));
+                setFeaturedMovies(featured.length > 0 ? featured : res.data.slice(0, 5));
             } catch (err) {
                 console.error(err);
             }
@@ -23,79 +23,128 @@ const Home = () => {
         fetchMovies();
     }, []);
 
-    // Auto-slide effect
+    // Cinematic Auto-Play Slider
     useEffect(() => {
         if (featuredMovies.length === 0) return;
         const interval = setInterval(() => {
-            setCurrentIndex((prev) => (prev + 1) % featuredMovies.length);
-        }, 5000);
+            setActiveIndex((prev) => (prev + 1) % featuredMovies.length);
+        }, 8000); // 8 seconds per slide for cinematic feel
         return () => clearInterval(interval);
     }, [featuredMovies]);
 
-    const currentMovie = featuredMovies[currentIndex];
-    const nowShowing = movies.filter(m => !featuredMovies.find(f => f._id === m._id));
+    const activeMovie = featuredMovies[activeIndex];
+
+    if (!activeMovie) return <div className="loader"></div>;
 
     return (
-        <div className="home-page fade-in">
-            {currentMovie && (
-                <header className="hero" style={{ '--hero-bg': `url(${currentMovie.posterUrl})` }}>
-                    <div className="container hero-content">
-                        <span className="hero-tag">Now Showing &bull; Premiere</span>
-                        <h1 className="hero-title fade-in-up" key={currentMovie._id}>{currentMovie.title}</h1>
-                        <p className="hero-synopsis fade-in-up-delay">{currentMovie.synopsis}</p>
-                        <div className="hero-meta fade-in-up-delay">
-                            <span>{currentMovie.genre.join(' • ')}</span>
-                            <span>{currentMovie.duration} min</span>
+        <div className="home-container">
+            {/* 1. Cinematic Hero Section */}
+            <div className="cinematic-hero">
+                <div className="hero-backdrop" style={{ backgroundImage: `url(${activeMovie.posterUrl})` }}></div>
+                <div className="hero-overlay"></div>
+
+                <div className="hero-content container">
+                    <div className="hero-text-content slide-up">
+                        <div className="hero-badges">
+                            <span className="badge premium">💎 Premium Experience</span>
+                            <span className="badge rating"><FaStar /> {activeMovie.rating}/5</span>
                         </div>
-                        <div className="hero-actions fade-in-up-delay-2">
-                            <button className="btn-primary" onClick={() => window.location.href = `/movie/${currentMovie._id}`}>
-                                Book Tickets
+
+                        <h1 className="hero-title">{activeMovie.title}</h1>
+
+                        <div className="hero-meta">
+                            <span>{activeMovie.genre.join(' | ')}</span>
+                            <span className="separator">•</span>
+                            <span>{activeMovie.duration} MIN</span>
+                            <span className="separator">•</span>
+                            <span>4K DOLBY ATMOS</span>
+                        </div>
+
+                        <p className="hero-synopsis">{activeMovie.synopsis}</p>
+
+                        <div className="hero-actions">
+                            <button className="btn-hero primary" onClick={() => window.location.href = `/movie/${activeMovie._id}`}>
+                                <FaTicketAlt /> Book Tickets
                             </button>
-                            <div className="slider-dots">
-                                {featuredMovies.map((_, idx) => (
-                                    <span
-                                        key={idx}
-                                        className={`dot ${idx === currentIndex ? 'active' : ''}`}
-                                        onClick={() => setCurrentIndex(idx)}
-                                    ></span>
-                                ))}
-                            </div>
+                            <button className="btn-hero secondary" onClick={() => window.location.href = `/movie/${activeMovie._id}`}>
+                                <FaInfoCircle /> More Info
+                            </button>
                         </div>
                     </div>
-                </header>
-            )}
 
-            <section className="section-padding container">
-                <div className="section-header">
-                    <h2>Now Showing</h2>
-                    <a href="/movies" className="btn-outline small">View All</a>
+                    {/* 3D Poster Card */}
+                    <div className="hero-poster-3d float-animation">
+                        <img src={activeMovie.posterUrl} alt={activeMovie.title} />
+                        <div className="poster-reflection"></div>
+                    </div>
                 </div>
-                <div className="grid-cols-4">
-                    {nowShowing.map(movie => (
-                        <MovieCard key={movie._id} movie={movie} />
+
+                {/* Progress Indicators */}
+                <div className="hero-indicators">
+                    {featuredMovies.map((_, idx) => (
+                        <div
+                            key={idx}
+                            className={`indicator-line ${idx === activeIndex ? 'active' : ''}`}
+                            onClick={() => setActiveIndex(idx)}
+                        >
+                            <div className="progress"></div>
+                        </div>
                     ))}
                 </div>
-            </section>
+            </div>
 
-            {/* New Luxury Section */}
-            <section className="luxury-section section-padding">
+            {/* 2. Glassmorphism Movies Showcase */}
+            <section className="showcase-section">
                 <div className="container">
-                    <div className="luxury-content">
-                        <h2>The Royal Experience</h2>
-                        <p>Immerse yourself in a cinematic journey like no other. Our state-of-the-art halls, reclining gold-class seats, and gourmet service redefine entertainment.</p>
-                        <button className="btn-outline">Explore Our Halls</button>
+                    <div className="section-header">
+                        <h2>Now Showing</h2>
+                        <a href="/movies" className="view-all">View All <FaChevronRight /></a>
+                    </div>
+
+                    <div className="movie-grid-modern">
+                        {movies.slice(0, 8).map(movie => (
+                            <div key={movie._id} className="movie-card-modern" onClick={() => window.location.href = `/movie/${movie._id}`}>
+                                <div className="card-image">
+                                    <img src={movie.posterUrl} alt={movie.title} />
+                                    <div className="card-overlay">
+                                        <button className="btn-book-now">Book Now</button>
+                                    </div>
+                                </div>
+                                <div className="card-info">
+                                    <h3>{movie.title}</h3>
+                                    <p>{movie.genre[0]}</p>
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </section>
 
-            {/* Newsletter Section */}
-            <section className="newsletter-section section-padding container">
-                <div className="newsletter-box">
-                    <h2>Join the Exclusive Club</h2>
-                    <p>Be the first to know about premieres, red carpet events, and exclusive offers.</p>
-                    <div className="newsletter-form">
-                        <input type="email" placeholder="Your Email Address" />
-                        <button className="btn-primary">Subscribe</button>
+            {/* 3. The Royal Experience */}
+            <section className="experience-section">
+                <div className="experience-bg"></div>
+                <div className="container experience-content">
+                    <span className="sub-heading">Redefining Cinema</span>
+                    <h2>The Royal Experience</h2>
+                    <p>
+                        Step into a world where luxury meets technology.
+                        Our private suites feature fully reclining Italian leather seats,
+                        personal butler service, and a curated gourmet menu delivered to your seat.
+                    </p>
+
+                    <div className="feature-grid">
+                        <div className="feature-item">
+                            <span className="feature-icon">🎬</span>
+                            <h4>Laser IMAX 4K</h4>
+                        </div>
+                        <div className="feature-item">
+                            <span className="feature-icon">🔊</span>
+                            <h4>Dolby Atmos 360°</h4>
+                        </div>
+                        <div className="feature-item">
+                            <span className="feature-icon">🍷</span>
+                            <h4>VIP Lounge Access</h4>
+                        </div>
                     </div>
                 </div>
             </section>

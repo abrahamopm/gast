@@ -23,7 +23,12 @@ const Login = () => {
             localStorage.setItem('token', res.data.token);
             localStorage.setItem('user', JSON.stringify(res.data.user)); // Store user info
             addNotification('Login successful! Welcome back.', 'success');
-            navigate('/');
+
+            if (res.data.user.role === 'admin') {
+                navigate('/admin');
+            } else {
+                navigate('/');
+            }
         } catch (err) {
             console.error(err);
             addNotification(err.response?.data?.message || 'Login failed. Please check your credentials.', 'error');
